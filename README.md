@@ -2,6 +2,12 @@
 
 Ứng dụng desktop để lưu thư viện hình nền cá nhân, xem ảnh/GIF và đặt ảnh tĩnh làm hình nền máy. ChillTheme hiện được đóng gói cho **Windows, macOS và Linux**.
 
+## Cài đặt Windows
+
+File Windows là bộ cài `.exe` chuẩn. Khi chạy bộ cài, hãy bấm **Browse...** ở bước *Choose Install Location* để chọn ổ đĩa hoặc thư mục muốn cài ChillTheme, ví dụ `D:\Apps\ChillTheme`. Bộ cài không cài âm thầm; bạn có thể đổi vị trí trước khi bấm Install.
+
+Thư viện ảnh của bản MVP hiện được lưu trong dữ liệu người dùng của Electron trên máy. Việc chọn thư mục ở trình cài quyết định vị trí cài ứng dụng; tính năng chọn riêng ổ lưu thư viện ảnh sẽ được tách thành một tùy chọn trong app ở bản tiếp theo để không làm mất dữ liệu khi nâng cấp.
+
 ## Tải trực tiếp
 
 Các file cài đặt đã được build tự động và đính kèm trong release [v0.1.2](https://github.com/Catscript1985/ChillTheme/releases/tag/v0.1.2):
@@ -41,6 +47,14 @@ npm start
 
 ```bash
 npm run build
+```
+
+Hoặc build riêng từng nền tảng:
+
+```bash
+npm run build:win
+npm run build:mac
+npm run build:linux
 ```
 
 Lệnh trên tạo bộ cài theo hệ điều hành của máy đang build. Khi push tag phiên bản, GitHub Actions sẽ build riêng trên runner Windows, macOS và Ubuntu rồi đính kèm file vào GitHub Release.
