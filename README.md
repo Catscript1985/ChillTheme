@@ -4,15 +4,15 @@
 
 ## Tải trực tiếp
 
-Các file cài đặt được build tự động bằng GitHub Actions và đính kèm trong bản phát hành mới nhất:
+Các file cài đặt đã được build tự động và đính kèm trong release [v0.1.2](https://github.com/Catscript1985/ChillTheme/releases/tag/v0.1.2):
 
 | Hệ điều hành | Tải xuống |
 |---|---|
-| [![Windows](https://img.shields.io/badge/Windows-10%2F11-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/Catscript1985/ChillTheme/releases/latest/download/ChillTheme-Windows-x64.exe) | [Tải bản Windows x64](https://github.com/Catscript1985/ChillTheme/releases/latest/download/ChillTheme-Windows-x64.exe) |
-| [![macOS](https://img.shields.io/badge/macOS-12%2B-000000?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/Catscript1985/ChillTheme/releases/latest/download/ChillTheme-macOS-arm64.dmg) | [Tải bản macOS Apple Silicon](https://github.com/Catscript1985/ChillTheme/releases/latest/download/ChillTheme-macOS-arm64.dmg) · [Intel](https://github.com/Catscript1985/ChillTheme/releases/latest/download/ChillTheme-macOS-x64.dmg) |
-| [![Linux](https://img.shields.io/badge/Linux-x64-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/Catscript1985/ChillTheme/releases/latest/download/ChillTheme-Linux-x86_64.AppImage) | [Tải AppImage Linux x64](https://github.com/Catscript1985/ChillTheme/releases/latest/download/ChillTheme-Linux-x86_64.AppImage) · [DEB](https://github.com/Catscript1985/ChillTheme/releases/latest/download/ChillTheme-Linux-amd64.deb) |
+| [![Windows](https://img.shields.io/badge/Windows-10%2F11-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.2/ChillTheme-Windows-x64.exe) | [Tải bản Windows x64](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.2/ChillTheme-Windows-x64.exe) |
+| [![macOS](https://img.shields.io/badge/macOS-12%2B-000000?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.2/ChillTheme-macOS-arm64.dmg) | [Tải bản macOS Apple Silicon](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.2/ChillTheme-macOS-arm64.dmg) · [Intel](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.2/ChillTheme-macOS-x64.dmg) |
+| [![Linux](https://img.shields.io/badge/Linux-x64-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.2/ChillTheme-Linux-x86_64.AppImage) | [Tải AppImage Linux x64](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.2/ChillTheme-Linux-x86_64.AppImage) · [DEB](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.2/ChillTheme-Linux-amd64.deb) |
 
-> Nếu link tải báo chưa có file, hãy mở mục [Releases](https://github.com/Catscript1985/ChillTheme/releases) và chọn bản phát hành mới nhất. GitHub Actions sẽ tạo file sau mỗi tag phiên bản dạng `v0.1.0`.
+> **Lưu ý:** Repository hiện đang ở chế độ Private. Bạn cần đăng nhập GitHub bằng tài khoản đã được cấp quyền vào repo trước khi tải; nếu chưa đăng nhập, GitHub có thể hiển thị `404`. Có thể mở [release v0.1.2](https://github.com/Catscript1985/ChillTheme/releases/tag/v0.1.2) để xem toàn bộ file.
 
 ### Các nền tảng được hỗ trợ
 
