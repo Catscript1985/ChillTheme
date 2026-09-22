@@ -10,9 +10,9 @@ Các file cài đặt được build tự động bằng GitHub Actions và đí
 |---|---|
 | [![Windows](https://img.shields.io/badge/Windows-10%2F11-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/Catscript1985/ChillTheme/releases/latest/download/ChillTheme-Windows-x64.exe) | [Tải bản Windows x64](https://github.com/Catscript1985/ChillTheme/releases/latest/download/ChillTheme-Windows-x64.exe) |
 | [![macOS](https://img.shields.io/badge/macOS-12%2B-000000?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/Catscript1985/ChillTheme/releases/latest/download/ChillTheme-macOS-arm64.dmg) | [Tải bản macOS Apple Silicon](https://github.com/Catscript1985/ChillTheme/releases/latest/download/ChillTheme-macOS-arm64.dmg) · [Intel](https://github.com/Catscript1985/ChillTheme/releases/latest/download/ChillTheme-macOS-x64.dmg) |
-| [![Linux](https://img.shields.io/badge/Linux-x64-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/Catscript1985/ChillTheme/releases/latest) | [Tải AppImage Linux x64](https://github.com/Catscript1985/ChillTheme/releases/latest/download/ChillTheme-Linux-x86_64.AppImage) · [DEB](https://github.com/Catscript1985/ChillTheme/releases/latest/download/ChillTheme-Linux-amd64.deb) |
+| [![Linux](https://img.shields.io/badge/Linux-x64-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/Catscript1985/ChillTheme/releases/latest/download/ChillTheme-Linux-x86_64.AppImage) | [Tải AppImage Linux x64](https://github.com/Catscript1985/ChillTheme/releases/latest/download/ChillTheme-Linux-x86_64.AppImage) · [DEB](https://github.com/Catscript1985/ChillTheme/releases/latest/download/ChillTheme-Linux-amd64.deb) |
 
-> Nếu link tải trực tiếp chưa có file, hãy mở mục [Releases](https://github.com/Catscript1985/ChillTheme/releases). Link tải chỉ hoạt động sau khi GitHub Actions hoàn thành bản phát hành đầu tiên; mỗi tag phiên bản dạng `v0.1.1` sẽ tạo một release mới.
+> Nếu link tải báo chưa có file, hãy mở mục [Releases](https://github.com/Catscript1985/ChillTheme/releases) và chọn bản phát hành mới nhất. GitHub Actions sẽ tạo file sau mỗi tag phiên bản dạng `v0.1.0`.
 
 ### Các nền tảng được hỗ trợ
 
