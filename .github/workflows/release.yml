@@ -20,19 +20,15 @@ jobs:
           - os: windows-latest
             platform: win
             artifact: windows
-            arch: x64
           - os: macos-latest
             platform: mac
             artifact: macos-arm64
-            arch: arm64
-          - os: macos-latest
+          - os: macos-13
             platform: mac
             artifact: macos-x64
-            arch: x64
           - os: ubuntu-latest
             platform: linux
             artifact: linux
-            arch: x64
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,7 +43,7 @@ jobs:
         run: npm ci
 
       - name: Build installers
-        run: npx electron-builder --${{ matrix.platform }} --${{ matrix.arch }} --publish never
+        run: npx electron-builder --${{ matrix.platform }} --publish never
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
