@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChillTheme — Wallpaper library</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+    <main class="shell">
+      <aside class="sidebar">
+        <div class="brand"><div class="brand-mark">✦</div><div><strong>ChillTheme</strong><small>WALLPAPER LIBRARY</small></div></div>
+        <nav>
+          <button class="nav-item active" data-view="library"><span>▦</span> Thư viện</button>
+          <button class="nav-item" data-view="favorites"><span>♡</span> Yêu thích</button>
+          <button class="nav-item" data-view="settings"><span>◌</span> Cài đặt</button>
+        </nav>
+        <div class="sidebar-bottom"><div class="storage-label"><span>Bộ nhớ cục bộ</span><span id="storageText">0 ảnh</span></div><div class="storage-bar"><i id="storageBar"></i></div><p>Ảnh của bạn chỉ được lưu trên thiết bị trong bản MVP này.</p></div>
+      </aside>
+      <section class="content">
+        <header class="topbar"><div><p class="eyebrow">PERSONAL COLLECTION / 01</p><h1 id="pageTitle">Không gian của bạn</h1></div><div class="top-actions"><button class="icon-btn" id="searchBtn" title="Tìm kiếm">⌕</button><button class="profile"><span class="avatar">CT</span><span id="userName">Khách</span><b>⌄</b></button></div></header>
+        <section id="authView" class="auth-card hidden"><div class="auth-copy"><span class="eyebrow">CHILLTHEME ACCOUNT</span><h2>Giữ những khung hình<br><em>đáng nhớ</em> bên bạn.</h2><p>Đăng nhập để đồng bộ thư viện wallpaper của riêng bạn. Bản MVP đang lưu dữ liệu cục bộ để bạn trải nghiệm ngay.</p></div><form id="authForm"><label>Email<input id="email" type="email" required placeholder="you@example.com"></label><label>Mật khẩu<input id="password" type="password" required minlength="4" placeholder="••••••••"></label><button class="primary wide" type="submit">Vào ChillTheme <span>→</span></button><small>Chế độ demo: tài khoản được lưu cục bộ trên thiết bị.</small></form></section>
+        <section id="libraryView"><div class="hero-row"><div><p class="muted" id="greeting">YOUR VISUAL ARCHIVE</p><h2><span id="countText">0</span> hình nền <span class="slash">/</span> <span class="soft">tâm trạng</span></h2></div><button id="uploadBtn" class="primary">＋ Tải ảnh lên</button><input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden></div><div id="filterRow" class="filter-row"><button class="chip active" data-filter="all">Tất cả</button><button class="chip" data-filter="static">Ảnh tĩnh</button><button class="chip" data-filter="gif">GIF động</button><span class="filter-spacer"></span><span class="mono" id="sortLabel">MỚI NHẤT ↓</span></div><div id="gallery" class="gallery"></div><div id="emptyState" class="empty-state hidden"><div class="empty-orbit">✦</div><h3>Thư viện còn đang thở</h3><p>Tải lên ảnh đầu tiên để bắt đầu tạo không gian của riêng bạn.</p><button class="secondary" id="emptyUpload">Chọn ảnh đầu tiên</button></div></section>
+        <section id="settingsView" class="settings-view hidden"><div class="settings-card"><p class="eyebrow">LOCAL PROFILE</p><h2>Tài khoản & thiết bị</h2><p class="muted">Bản đầu tiên chạy offline-first. Phần đồng bộ cloud sẽ được kết nối sau khi backend được thêm vào repository.</p><div class="setting-row"><div><strong id="settingsEmail">Chưa đăng nhập</strong><small>Tài khoản hiện tại</small></div><button class="secondary" id="logoutBtn">Đăng xuất</button></div><div class="setting-row"><div><strong>Windows wallpaper engine</strong><small>Ảnh tĩnh được đặt trực tiếp qua PowerShell native API.</small></div><span class="status-pill">SẴN SÀNG</span></div></div></section>
+      </section>
+    </main>
+    <dialog id="detailDialog"><button class="dialog-close" id="closeDialog">×</button><div id="detailMedia" class="detail-media"></div><div class="detail-info"><div><p class="eyebrow" id="detailType">WALLPAPER</p><h2 id="detailName">image.jpg</h2><p class="muted" id="detailMeta"></p></div><div class="detail-actions"><button class="secondary" id="deleteBtn">⌫ Xóa ảnh</button><button class="primary" id="wallpaperBtn">✦ Đặt làm hình nền</button></div></div></dialog>
+    <div id="toast" class="toast" role="status"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>

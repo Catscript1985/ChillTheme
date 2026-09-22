@@ -1,0 +1,19 @@
+{
+  "name": "chilltheme",
+  "version": "0.1.0",
+  "description": "Personal wallpaper library for Windows",
+  "main": "electron/main.cjs",
+  "type": "commonjs",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "build": "electron-builder --win --dir",
+    "check": "node --check electron/main.cjs && node --check src/app.js"
+  },
+  "keywords": ["wallpaper", "windows", "gif", "electron"],
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^38.1.0",
+    "electron-builder": "^26.0.12"
+  }
+}
