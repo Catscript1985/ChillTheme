@@ -20,7 +20,7 @@
     "asar": true,
     "files": ["electron/**/*", "src/**/*", "package.json"],
     "win": {
-      "target": ["nsis", "portable"],
+      "target": ["nsis"],
       "artifactName": "ChillTheme-Windows-${arch}.${ext}"
     },
     "nsis": {
