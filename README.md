@@ -10,15 +10,15 @@ Thư viện ảnh của bản MVP hiện được lưu trong dữ liệu ngườ
 
 ## Tải trực tiếp
 
-Các file cài đặt đã được build tự động và đính kèm trong release [v0.1.3](https://github.com/Catscript1985/ChillTheme/releases/tag/v0.1.3):
+Các file cài đặt đã được build tự động và đính kèm trong release [v0.1.4](https://github.com/Catscript1985/ChillTheme/releases/tag/v0.1.4):
 
 | Hệ điều hành | Tải xuống |
 |---|---|
-| [![Windows](https://img.shields.io/badge/Windows-10%2F11-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.3/ChillTheme-Windows-x64.exe) | [Tải bản Windows x64](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.3/ChillTheme-Windows-x64.exe) |
-| [![macOS](https://img.shields.io/badge/macOS-12%2B-000000?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.3/ChillTheme-macOS-arm64.dmg) | [Tải bản macOS Apple Silicon](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.3/ChillTheme-macOS-arm64.dmg) · [Intel](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.3/ChillTheme-macOS-x64.dmg) |
-| [![Linux](https://img.shields.io/badge/Linux-x64-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.3/ChillTheme-Linux-x86_64.AppImage) | [Tải AppImage Linux x64](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.3/ChillTheme-Linux-x86_64.AppImage) · [DEB](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.3/ChillTheme-Linux-amd64.deb) |
+| [![Windows](https://img.shields.io/badge/Windows-10%2F11-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.4/ChillTheme-Windows-x64.exe) | [Tải bản Windows x64](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.4/ChillTheme-Windows-x64.exe) |
+| [![macOS](https://img.shields.io/badge/macOS-12%2B-000000?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.4/ChillTheme-macOS-arm64.dmg) | [Tải bản macOS Apple Silicon](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.4/ChillTheme-macOS-arm64.dmg) · [Intel](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.4/ChillTheme-macOS-x64.dmg) |
+| [![Linux](https://img.shields.io/badge/Linux-x64-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.4/ChillTheme-Linux-x86_64.AppImage) | [Tải AppImage Linux x64](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.4/ChillTheme-Linux-x86_64.AppImage) · [DEB](https://github.com/Catscript1985/ChillTheme/releases/download/v0.1.4/ChillTheme-Linux-amd64.deb) |
 
-> **Lưu ý:** Repository hiện đang ở chế độ Private. Bạn cần đăng nhập GitHub bằng tài khoản đã được cấp quyền vào repo trước khi tải; nếu chưa đăng nhập, GitHub có thể hiển thị `404`. Có thể mở [release v0.1.3](https://github.com/Catscript1985/ChillTheme/releases/tag/v0.1.3) để xem toàn bộ file.
+> **Lưu ý:** Repository hiện đang ở chế độ Private. Bạn cần đăng nhập GitHub bằng tài khoản đã được cấp quyền vào repo trước khi tải; nếu chưa đăng nhập, GitHub có thể hiển thị `404`. Có thể mở [release v0.1.4](https://github.com/Catscript1985/ChillTheme/releases/tag/v0.1.4) để xem toàn bộ file.
 
 ### Các nền tảng được hỗ trợ
 
