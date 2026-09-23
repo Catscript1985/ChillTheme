@@ -42,6 +42,7 @@ npm start
 - Xóa ảnh khỏi thư viện.
 - Đặt ảnh tĩnh làm hình nền Windows qua PowerShell `SystemParametersInfo`.
 - Đặt GIF làm **live wallpaper Windows**: GIF được phát lặp trên tất cả màn hình ở lớp nền phía sau cửa sổ ứng dụng.
+- Sau khi đặt GIF, cửa sổ ChillTheme tự ẩn xuống **system tray** như các app wallpaper trên Steam; bấm biểu tượng tray để mở lại, dừng wallpaper hoặc thoát app.
 - GIF vẫn được phát động trong giao diện xem trước và có phân loại `GIF / LIVE`.
 
 ## Build thủ công
@@ -64,4 +65,4 @@ Lệnh trên tạo bộ cài theo hệ điều hành của máy đang build. Khi
 
 Dữ liệu ảnh hiện được lưu trong `localStorage` để có thể chạy ngay không cần backend. Đây là lớp prototype; phiên bản tiếp theo nên thay bằng SQLite/IndexedDB cho thư viện lớn, sau đó kết nối Auth và object storage để đồng bộ tài khoản giữa các thiết bị.
 
-Windows không có API wallpaper mặc định nhận GIF trực tiếp. ChillTheme hiện dùng cửa sổ nền Electron không tương tác, đặt ở lớp dưới cùng và phủ theo từng màn hình để phát GIF lặp. Phiên bản tiếp theo có thể bổ sung native worker để tối ưu CPU/RAM và xử lý video.
+Windows không có API wallpaper mặc định nhận GIF trực tiếp. ChillTheme dùng `WorkerW` của Windows để gắn một cửa sổ nền không tương tác phía sau desktop icons, phủ theo virtual desktop và phát GIF lặp. App chính được giữ trong system tray để wallpaper tiếp tục chạy giống các ứng dụng wallpaper trên Steam.

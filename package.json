@@ -1,6 +1,6 @@
 {
   "name": "chilltheme",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "description": "Personal wallpaper library for Windows, macOS and Linux",
   "author": "ChillTheme Contributors <noreply@github.com>",
   "main": "electron/main.cjs",
