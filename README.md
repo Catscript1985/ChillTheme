@@ -1,10 +1,10 @@
 # ChillTheme
 
-ChillTheme là ứng dụng desktop offline-first để lưu, xem và thay hình nền Windows qua app. Bản mới chuyển sang **Windows native wallpaper**: nền được thay thật bằng API hệ thống, không còn cửa sổ live wallpaper đè lên desktop.
+ChillTheme là ứng dụng desktop offline-first để lưu, xem và thay hình nền Windows qua app. Từ v0.3.0, bạn có thể chọn giữa **nền Windows native** hoặc **đè màn overlay**.
 
 ## Tải bản mới nhất
 
-Các link dưới đây luôn trỏ tới asset của **GitHub Release mới nhất**, vì vậy README không cần sửa lại tên phiên bản sau mỗi lần phát hành:
+Các link dưới đây luôn trỏ tới asset của **GitHub Release mới nhất**:
 
 | Hệ điều hành | Tải xuống |
 |---|---|
@@ -14,18 +14,28 @@ Các link dưới đây luôn trỏ tới asset của **GitHub Release mới nh�
 
 > Repository đang ở chế độ Private. Cần đăng nhập GitHub bằng tài khoản có quyền truy cập repo; nếu chưa đăng nhập, GitHub có thể hiển thị `404`.
 
-## Trang giới thiệu
+## Hai chế độ hình nền
 
-Mở trang giới thiệu tĩnh của ChillTheme tại **[Catscript1985.github.io/ChillTheme](https://catscript1985.github.io/ChillTheme/)**. Trang này được deploy tự động từ thư mục `docs/` bằng GitHub Pages.
+### 1. Thay nền Windows native
 
-## Tính năng mới
+Ảnh được ghi thành file nền và gọi `SystemParametersInfo`, giống thao tác thay hình nền thủ công trong Windows. Không có cửa sổ phủ lên desktop. Ảnh được chuẩn hóa về 2560 × 1440, dùng chế độ Fill và tự căn tâm để phù hợp màn hình. Nút **Gỡ nền native** khôi phục lại nền Windows đã được ChillTheme lưu trước đó.
 
-- **Thay nền Windows native:** ảnh được ghi thành file nền và gọi `SystemParametersInfo`, giống thao tác thay hình nền thủ công trong Windows; không còn lớp cửa sổ phủ lên desktop.
-- **Bỏ đăng nhập:** mở app là dùng ngay, không cần email, mật khẩu hay tài khoản demo.
-- **Gỡ nền ChillTheme:** app tự lưu đường dẫn nền Windows trước lần thay đầu tiên. Nút **Gỡ nền ChillTheme** khôi phục nền gốc đã lưu.
-- **Tự khớp màn hình:** Windows dùng chế độ `Fill`, tự phủ ảnh theo tỷ lệ màn hình để hạn chế khoảng trống; ảnh nguồn 2K–4K được khuyến nghị để đạt độ nét tốt.
-- **GIF tương thích native:** GIF được lấy khung hình đầu tiên rồi chuyển thành PNG chất lượng cao trước khi đặt làm nền. Windows native không phát GIF động trực tiếp; muốn phát động cần wallpaper engine riêng.
-- **Thư viện offline:** ảnh lưu cục bộ trên thiết bị, không cần backend.
+### 2. Đè màn overlay
+
+Nút **Đè màn** tạo một cửa sổ overlay riêng cho từng màn hình. Ảnh được tự căn theo đúng kích thước từng display bằng `object-fit: contain`, giúp không bị phóng to/cắt ảnh và giữ độ rõ tốt hơn. App chính vẫn hiện phía trên khi mở, còn overlay tiếp tục chạy khi bấm nút đóng vì ChillTheme được giữ trong system tray.
+
+- **Đè màn:** bật overlay trên tất cả màn hình.
+- **Gỡ đè:** đóng riêng các cửa sổ overlay, không thay đổi nền Windows native.
+- **Tắt cửa sổ app:** overlay không mất; ChillTheme tiếp tục chạy trong system tray.
+- **Thoát ChillTheme từ tray:** overlay sẽ được gỡ để không để lại tiến trình nền.
+
+## Các tính năng khác
+
+- Không cần đăng nhập; mở app là dùng.
+- Thư viện ảnh lưu cục bộ trên thiết bị.
+- Upload JPG, PNG, WebP và GIF.
+- GIF được lấy khung hình đầu tiên và chuyển thành PNG để tương thích nền Windows native; overlay có thể hiển thị file ảnh đã chuẩn hóa.
+- Nguồn ảnh 2K–4K được khuyến nghị để đạt độ nét tốt.
 
 ## Chạy từ mã nguồn
 
@@ -42,6 +52,10 @@ npm run build
 
 GitHub Actions tự build Windows, macOS và Linux khi push tag phiên bản `v*.*.*`, sau đó publish asset vào GitHub Release. Các link `releases/latest/download/...` trong README luôn tự trỏ đến bản mới nhất.
 
-## Giới hạn hiện tại
+## Trang giới thiệu
 
-Chức năng native wallpaper mới cần Windows. macOS và Linux vẫn được đóng gói để phát triển giao diện/thư viện; thao tác thay nền native sẽ được bổ sung theo API riêng của từng hệ điều hành.
+Mở trang giới thiệu tĩnh tại [Catscript1985.github.io/ChillTheme](https://catscript1985.github.io/ChillTheme/). Workflow deploy nằm trong `.github/workflows/pages.yml`.
+
+## Giới hạn
+
+Chức năng native Windows và overlay được triển khai cho Windows. macOS và Linux vẫn được đóng gói để phát triển giao diện/thư viện; cơ chế wallpaper riêng cho từng hệ điều hành sẽ được bổ sung sau.

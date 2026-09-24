@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000}img{display:block;width:100%;height:100%;object-fit:contain;object-position:center;user-select:none;pointer-events:none}</style>
+</head>
+<body>
+<img id="wallpaper" alt="ChillTheme overlay wallpaper">
+<script>
+const raw = decodeURIComponent(location.hash.slice(1)).replaceAll('\\', '/');
+const url = /^[A-Za-z]:\//.test(raw) ? `file:///${raw}` : `file://${raw}`;
+document.getElementById('wallpaper').src = url;
+</script>
+</body>
+</html>

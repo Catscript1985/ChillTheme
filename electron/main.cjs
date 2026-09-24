@@ -1,10 +1,13 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, screen, Tray, Menu, nativeImage } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs');
 const os = require('node:os');
 const { execFile } = require('node:child_process');
 
 let mainWindow;
+let tray;
+let overlayWindows = [];
+let isQuitting = false;
 
 function runPowerShell(script) {
   return new Promise((resolve, reject) => {
@@ -14,27 +17,21 @@ function runPowerShell(script) {
     });
   });
 }
-
 function quotePowerShell(value) { return String(value).replace(/'/g, "''"); }
 function backupPath() { return path.join(app.getPath('userData'), 'wallpaper-backup.json'); }
+function closeOverlayWallpaper() { overlayWindows.forEach((window) => { if (!window.isDestroyed()) window.close(); }); overlayWindows = []; }
 
 async function getCurrentWallpaper() {
-  const value = await runPowerShell("(Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name Wallpaper).Wallpaper");
-  return value.trim();
+  return (await runPowerShell("(Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name Wallpaper).Wallpaper")).trim();
 }
-
 async function saveOriginalWallpaper() {
   const file = backupPath();
   if (fs.existsSync(file)) return;
   try {
     const original = await getCurrentWallpaper();
-    if (original && fs.existsSync(original)) {
-      fs.mkdirSync(path.dirname(file), { recursive: true });
-      fs.writeFileSync(file, JSON.stringify({ path: original, savedAt: Date.now() }));
-    }
-  } catch { /* A missing original path should not block a new wallpaper. */ }
+    if (original && fs.existsSync(original)) { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, JSON.stringify({ path: original, savedAt: Date.now() })); }
+  } catch { /* Keep applying a new wallpaper if the old path is unavailable. */ }
 }
-
 async function applyNativeWallpaper(filePath) {
   await saveOriginalWallpaper();
   const escaped = quotePowerShell(filePath);
@@ -43,12 +40,20 @@ async function applyNativeWallpaper(filePath) {
 }
 
 function createWindow() {
-  mainWindow = new BrowserWindow({
-    width: 1280, height: 820, minWidth: 980, minHeight: 680,
-    backgroundColor: '#10131a', titleBarStyle: 'hiddenInset',
-    webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, nodeIntegration: false }
-  });
+  mainWindow = new BrowserWindow({ width: 1280, height: 820, minWidth: 980, minHeight: 680, backgroundColor: '#10131a', titleBarStyle: 'hiddenInset', webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, nodeIntegration: false } });
   mainWindow.loadFile(path.join(__dirname, '..', 'src', 'index.html'));
+  mainWindow.on('close', (event) => { if (!isQuitting) { event.preventDefault(); mainWindow.hide(); } });
+}
+function createTray() {
+  tray = new Tray(nativeImage.createEmpty());
+  tray.setToolTip('ChillTheme');
+  tray.setContextMenu(Menu.buildFromTemplate([
+    { label: 'Mở ChillTheme', click: () => { mainWindow.show(); mainWindow.focus(); } },
+    { label: 'Gỡ đè màn', click: () => closeOverlayWallpaper() },
+    { type: 'separator' },
+    { label: 'Thoát ChillTheme', click: () => { isQuitting = true; closeOverlayWallpaper(); app.quit(); } }
+  ]));
+  tray.on('double-click', () => { mainWindow.show(); mainWindow.focus(); });
 }
 
 ipcMain.handle('choose-image', async () => {
@@ -60,16 +65,12 @@ ipcMain.handle('set-wallpaper', async (_event, payload) => {
   if (process.platform !== 'win32') return { ok: false, message: 'Đặt nền native hiện chỉ triển khai cho Windows.' };
   if (!payload?.dataUrl) return { ok: false, message: 'Chưa có dữ liệu hình nền.' };
   const match = payload.dataUrl.match(/^data:image\/(png|jpeg|jpg|webp);base64,(.+)$/);
-  if (!match) return { ok: false, message: 'Ảnh GIF đã được chuyển sang khung hình tương thích Windows trước khi đặt nền.' };
+  if (!match) return { ok: false, message: 'Ảnh chưa ở định dạng tương thích Windows.' };
   const ext = match[1] === 'jpeg' || match[1] === 'jpg' ? 'jpg' : match[1];
   const wallpaperPath = path.join(os.tmpdir(), `chilltheme-wallpaper.${ext}`);
   fs.writeFileSync(wallpaperPath, Buffer.from(match[2], 'base64'));
-  try {
-    await applyNativeWallpaper(wallpaperPath);
-    return { ok: true, message: payload.wasGif ? 'Đã thay nền Windows bằng khung hình đầu tiên của GIF. Windows native không phát GIF động.' : 'Đã thay hẳn nền Windows. Chế độ Fill đã tự khớp màn hình.' };
-  } catch (error) {
-    return { ok: false, message: `Không thể thay nền Windows: ${error.message}` };
-  }
+  try { await applyNativeWallpaper(wallpaperPath); return { ok: true, message: payload.wasGif ? 'Đã thay nền Windows bằng khung hình đầu tiên của GIF.' : 'Đã thay hẳn nền Windows. Chế độ Fill đã tự khớp màn hình.' }; }
+  catch (error) { return { ok: false, message: `Không thể thay nền Windows: ${error.message}` }; }
 });
 
 ipcMain.handle('restore-wallpaper', async () => {
@@ -79,15 +80,30 @@ ipcMain.handle('restore-wallpaper', async () => {
     if (!fs.existsSync(file)) return { ok: false, message: 'Chưa có nền gốc được lưu trong ChillTheme.' };
     const original = JSON.parse(fs.readFileSync(file, 'utf8')).path;
     if (!original || !fs.existsSync(original)) return { ok: false, message: 'Không tìm thấy file nền gốc trên máy.' };
-    await applyNativeWallpaper(original);
-    return { ok: true, message: 'Đã khôi phục nền Windows trước khi dùng ChillTheme.' };
-  } catch (error) {
-    return { ok: false, message: `Không thể khôi phục nền gốc: ${error.message}` };
-  }
+    await applyNativeWallpaper(original); return { ok: true, message: 'Đã khôi phục nền Windows trước khi dùng ChillTheme.' };
+  } catch (error) { return { ok: false, message: `Không thể khôi phục nền gốc: ${error.message}` }; }
 });
 
-app.whenReady().then(() => {
-  createWindow();
-  app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
+ipcMain.handle('set-overlay-wallpaper', async (_event, payload) => {
+  if (!payload?.dataUrl) return { ok: false, message: 'Chưa có dữ liệu để đè màn.' };
+  const match = payload.dataUrl.match(/^data:image\/(png|jpeg|jpg|gif|webp);base64,(.+)$/);
+  if (!match) return { ok: false, message: 'Ảnh chưa ở định dạng tương thích overlay.' };
+  const ext = match[1] === 'gif' ? 'gif' : 'png';
+  const overlayPath = path.join(os.tmpdir(), `chilltheme-overlay.${ext}`);
+  fs.writeFileSync(overlayPath, Buffer.from(match[2], 'base64'));
+  closeOverlayWallpaper();
+  overlayWindows = screen.getAllDisplays().map((display) => {
+    const window = new BrowserWindow({ x: display.bounds.x, y: display.bounds.y, width: display.bounds.width, height: display.bounds.height, frame: false, transparent: false, backgroundColor: '#000000', resizable: false, movable: false, skipTaskbar: true, focusable: false, fullscreenable: false, show: true, title: 'ChillTheme Overlay', webPreferences: { contextIsolation: true, nodeIntegration: false } });
+    window.setIgnoreMouseEvents(true);
+    window.loadFile(path.join(__dirname, 'overlay-wallpaper.html'), { hash: encodeURIComponent(overlayPath) });
+    return window;
+  });
+  if (mainWindow && !mainWindow.isDestroyed()) { mainWindow.show(); mainWindow.focus(); }
+  return { ok: true, message: `Đã đè nền trên ${overlayWindows.length} màn hình. App vẫn hiển thị phía trên và overlay tiếp tục chạy khi thu nhỏ.` };
 });
-app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
+
+ipcMain.handle('remove-overlay-wallpaper', () => { closeOverlayWallpaper(); return { ok: true, message: 'Đã gỡ đè màn. Nền Windows native không bị thay đổi.' }; });
+
+app.whenReady().then(() => { createWindow(); createTray(); app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); }); });
+app.on('before-quit', () => { isQuitting = true; closeOverlayWallpaper(); });
+app.on('window-all-closed', () => { /* Keep overlay active while ChillTheme is hidden in the tray. */ });
