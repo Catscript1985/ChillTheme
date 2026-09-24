@@ -1,13 +1,10 @@
-const { app, BrowserWindow, ipcMain, dialog, screen, Tray, Menu, nativeImage } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs');
 const os = require('node:os');
 const { execFile } = require('node:child_process');
 
 let mainWindow;
-let tray;
-let liveWindows = [];
-let isQuitting = false;
 
 function runPowerShell(script) {
   return new Promise((resolve, reject) => {
@@ -18,18 +15,31 @@ function runPowerShell(script) {
   });
 }
 
-function closeLiveWallpaper() {
-  liveWindows.forEach((window) => { if (!window.isDestroyed()) window.close(); });
-  liveWindows = [];
+function quotePowerShell(value) { return String(value).replace(/'/g, "''"); }
+function backupPath() { return path.join(app.getPath('userData'), 'wallpaper-backup.json'); }
+
+async function getCurrentWallpaper() {
+  const value = await runPowerShell("(Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name Wallpaper).Wallpaper");
+  return value.trim();
 }
 
-async function attachToWorkerW(window) {
-  const childHandle = window.getNativeWindowHandle().readBigUInt64LE(0).toString();
-  const script = `$ErrorActionPreference='Stop'; Add-Type @'
-using System; using System.Runtime.InteropServices;
-public static class Shell { [DllImport("user32.dll")] public static extern IntPtr FindWindow(string c,string n); [DllImport("user32.dll")] public static extern IntPtr FindWindowEx(IntPtr p,IntPtr c,string s,string n); [DllImport("user32.dll")] public static extern IntPtr SendMessageTimeout(IntPtr h,uint m,IntPtr w,IntPtr l,uint f,uint t,out IntPtr r); [DllImport("user32.dll")] public static extern IntPtr SetParent(IntPtr c,IntPtr p); }
-'@; $prog=[Shell]::FindWindow('Progman','Program Manager'); [IntPtr]$r=[IntPtr]::Zero; [Shell]::SendMessageTimeout($prog,0x052C,[IntPtr]::Zero,[IntPtr]::Zero,0,1000,[ref]$r)|Out-Null; $worker=[Shell]::FindWindowEx([IntPtr]::Zero,[IntPtr]::Zero,'WorkerW',$null); if($worker -eq [IntPtr]::Zero){$worker=$prog}; [Shell]::SetParent([IntPtr]${childHandle},$worker)|Out-Null; $worker.ToInt64()`;
-  return Number(await runPowerShell(script));
+async function saveOriginalWallpaper() {
+  const file = backupPath();
+  if (fs.existsSync(file)) return;
+  try {
+    const original = await getCurrentWallpaper();
+    if (original && fs.existsSync(original)) {
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      fs.writeFileSync(file, JSON.stringify({ path: original, savedAt: Date.now() }));
+    }
+  } catch { /* A missing original path should not block a new wallpaper. */ }
+}
+
+async function applyNativeWallpaper(filePath) {
+  await saveOriginalWallpaper();
+  const escaped = quotePowerShell(filePath);
+  const script = `$ErrorActionPreference='Stop'; Set-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name WallpaperStyle -Value '10'; Set-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name TileWallpaper -Value '0'; Add-Type @'\nusing System; using System.Runtime.InteropServices; public static class WallpaperApi { [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern bool SystemParametersInfo(int action, int param, string path, int winIni); }\n'@; if(-not [WallpaperApi]::SystemParametersInfo(20,0,'${escaped}',3)){ throw 'SystemParametersInfo failed' }`;
+  await runPowerShell(script);
 }
 
 function createWindow() {
@@ -39,19 +49,6 @@ function createWindow() {
     webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, nodeIntegration: false }
   });
   mainWindow.loadFile(path.join(__dirname, '..', 'src', 'index.html'));
-  mainWindow.on('close', (event) => { if (!isQuitting) { event.preventDefault(); mainWindow.hide(); } });
-}
-
-function createTray() {
-  tray = new Tray(nativeImage.createEmpty());
-  tray.setToolTip('ChillTheme — Live Wallpaper');
-  tray.setContextMenu(Menu.buildFromTemplate([
-    { label: 'Mở ChillTheme', click: () => { mainWindow.show(); mainWindow.focus(); } },
-    { label: 'Dừng live wallpaper', click: () => { closeLiveWallpaper(); mainWindow.show(); } },
-    { type: 'separator' },
-    { label: 'Thoát ChillTheme', click: () => { isQuitting = true; app.quit(); } }
-  ]));
-  tray.on('double-click', () => { mainWindow.show(); mainWindow.focus(); });
 }
 
 ipcMain.handle('choose-image', async () => {
@@ -60,51 +57,37 @@ ipcMain.handle('choose-image', async () => {
 });
 
 ipcMain.handle('set-wallpaper', async (_event, payload) => {
-  if (process.platform !== 'win32') return { ok: false, message: 'Đặt hình nền trực tiếp hiện được triển khai cho Windows.' };
+  if (process.platform !== 'win32') return { ok: false, message: 'Đặt nền native hiện chỉ triển khai cho Windows.' };
   if (!payload?.dataUrl) return { ok: false, message: 'Chưa có dữ liệu hình nền.' };
-  if (payload.kind === 'gif') {
-    const match = payload.dataUrl.match(/^data:image\/gif;base64,(.+)$/);
-    if (!match) return { ok: false, message: 'GIF không hợp lệ.' };
-    const gifPath = path.join(os.tmpdir(), 'chilltheme-live-wallpaper.gif');
-    fs.writeFileSync(gifPath, Buffer.from(match[1], 'base64'));
-    closeLiveWallpaper();
-    const displays = screen.getAllDisplays();
-    const left = Math.min(...displays.map((display) => display.bounds.x));
-    const top = Math.min(...displays.map((display) => display.bounds.y));
-    const right = Math.max(...displays.map((display) => display.bounds.x + display.bounds.width));
-    const bottom = Math.max(...displays.map((display) => display.bounds.y + display.bounds.height));
-    const window = new BrowserWindow({
-      x: left, y: top, width: right - left, height: bottom - top,
-      frame: false, resizable: false, movable: false, skipTaskbar: true,
-      focusable: false, fullscreenable: false, show: true,
-      title: 'ChillTheme Live Wallpaper',
-      webPreferences: { contextIsolation: true, nodeIntegration: false }
-    });
-    window.setIgnoreMouseEvents(true);
-    await window.loadFile(path.join(__dirname, 'live-wallpaper.html'), { hash: encodeURIComponent(gifPath) });
-    await attachToWorkerW(window);
-    window.setAlwaysOnBottom(true, 'normal');
-    liveWindows = [window];
-    mainWindow.hide();
-    return { ok: true, message: `Đã chuyển GIF xuống nền desktop trên ${displays.length} màn hình. ChillTheme đang chạy ở khay hệ thống.` };
-  }
   const match = payload.dataUrl.match(/^data:image\/(png|jpeg|jpg|webp);base64,(.+)$/);
-  if (!match) return { ok: false, message: 'Định dạng ảnh chưa được hỗ trợ để đặt làm hình nền.' };
+  if (!match) return { ok: false, message: 'Ảnh GIF đã được chuyển sang khung hình tương thích Windows trước khi đặt nền.' };
   const ext = match[1] === 'jpeg' || match[1] === 'jpg' ? 'jpg' : match[1];
   const wallpaperPath = path.join(os.tmpdir(), `chilltheme-wallpaper.${ext}`);
   fs.writeFileSync(wallpaperPath, Buffer.from(match[2], 'base64'));
-  const escaped = wallpaperPath.replace(/'/g, "''");
-  const script = `Add-Type @'\nusing System;\nusing System.Runtime.InteropServices;\npublic class Wallpaper { [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni); }\n'@; [Wallpaper]::SystemParametersInfo(20, 0, '${escaped}', 3)`;
-  try { await runPowerShell(script); return { ok: true, message: 'Đã thay hình nền Windows.' }; }
-  catch (error) { return { ok: false, message: `Không thể thay hình nền: ${error.message}` }; }
+  try {
+    await applyNativeWallpaper(wallpaperPath);
+    return { ok: true, message: payload.wasGif ? 'Đã thay nền Windows bằng khung hình đầu tiên của GIF. Windows native không phát GIF động.' : 'Đã thay hẳn nền Windows. Chế độ Fill đã tự khớp màn hình.' };
+  } catch (error) {
+    return { ok: false, message: `Không thể thay nền Windows: ${error.message}` };
+  }
 });
 
-ipcMain.handle('stop-live-wallpaper', () => { closeLiveWallpaper(); mainWindow.show(); mainWindow.focus(); return { ok: true }; });
+ipcMain.handle('restore-wallpaper', async () => {
+  if (process.platform !== 'win32') return { ok: false, message: 'Khôi phục nền native hiện chỉ triển khai cho Windows.' };
+  try {
+    const file = backupPath();
+    if (!fs.existsSync(file)) return { ok: false, message: 'Chưa có nền gốc được lưu trong ChillTheme.' };
+    const original = JSON.parse(fs.readFileSync(file, 'utf8')).path;
+    if (!original || !fs.existsSync(original)) return { ok: false, message: 'Không tìm thấy file nền gốc trên máy.' };
+    await applyNativeWallpaper(original);
+    return { ok: true, message: 'Đã khôi phục nền Windows trước khi dùng ChillTheme.' };
+  } catch (error) {
+    return { ok: false, message: `Không thể khôi phục nền gốc: ${error.message}` };
+  }
+});
 
 app.whenReady().then(() => {
   createWindow();
-  createTray();
   app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
 });
-app.on('before-quit', () => { isQuitting = true; closeLiveWallpaper(); });
-app.on('window-all-closed', () => { /* Keep ChillTheme available in the system tray. */ });
+app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
