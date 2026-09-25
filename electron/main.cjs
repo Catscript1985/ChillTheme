@@ -20,6 +20,17 @@ function runPowerShell(script) {
 function quotePowerShell(value) { return String(value).replace(/'/g, "''"); }
 function backupPath() { return path.join(app.getPath('userData'), 'wallpaper-backup.json'); }
 function closeOverlayWallpaper() { overlayWindows.forEach((window) => { if (!window.isDestroyed()) window.close(); }); overlayWindows = []; }
+function nativeWindowHandle(window) {
+  const buffer = window.getNativeWindowHandle();
+  return buffer.length >= 8 ? `0x${buffer.readBigUInt64LE().toString(16)}` : `0x${buffer.readUInt32LE().toString(16)}`;
+}
+async function attachToDesktopWorkerW(window) {
+  if (process.platform !== 'win32') return false;
+  const hwnd = nativeWindowHandle(window);
+  const script = `$ErrorActionPreference='Stop'; Add-Type @'\nusing System; using System.Text; using System.Runtime.InteropServices; public static class DesktopLayer { [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern IntPtr FindWindow(string cls, string name); [DllImport("user32.dll")] public static extern IntPtr FindWindowEx(IntPtr parent, IntPtr after, string cls, string name); [DllImport("user32.dll")] public static extern bool EnumWindows(EnumWindowsProc callback, IntPtr data); [DllImport("user32.dll")] public static extern uint SendMessageTimeout(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam, uint flags, uint timeout, out IntPtr result); [DllImport("user32.dll")] public static extern IntPtr SetParent(IntPtr child, IntPtr parent); [DllImport("user32.dll")] public static extern bool SetWindowPos(IntPtr hWnd, IntPtr insertAfter, int x, int y, int cx, int cy, uint flags); public delegate bool EnumWindowsProc(IntPtr hwnd, IntPtr data); public static IntPtr FindWorkerW(){ var prog=FindWindow("Progman",null); IntPtr result; SendMessageTimeout(prog,0x052C,IntPtr.Zero,IntPtr.Zero,0,1000,out result); IntPtr worker=IntPtr.Zero; EnumWindows((top,data)=>{ var view=FindWindowEx(top,IntPtr.Zero,"SHELLDLL_DefView",null); if(view!=IntPtr.Zero) worker=FindWindowEx(IntPtr.Zero,top,"WorkerW",null); return true; },IntPtr.Zero); return worker; } }\n'@; $worker=[DesktopLayer]::FindWorkerW(); if($worker -eq [IntPtr]::Zero){ throw 'WorkerW desktop layer not found' }; [void][DesktopLayer]::SetParent([IntPtr]::new(${hwnd}),$worker); [void][DesktopLayer]::SetWindowPos([IntPtr]::new(${hwnd}),[IntPtr]::new(1),0,0,0,0,0x0017)`;
+  await runPowerShell(script);
+  return true;
+}
 
 async function getCurrentWallpaper() {
   return (await runPowerShell("(Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name Wallpaper).Wallpaper")).trim();
@@ -96,10 +107,14 @@ ipcMain.handle('set-overlay-wallpaper', async (_event, payload) => {
     const window = new BrowserWindow({ x: display.bounds.x, y: display.bounds.y, width: display.bounds.width, height: display.bounds.height, frame: false, transparent: false, backgroundColor: '#000000', resizable: false, movable: false, skipTaskbar: true, focusable: false, fullscreenable: false, show: true, title: 'ChillTheme Overlay', webPreferences: { contextIsolation: true, nodeIntegration: false } });
     window.setIgnoreMouseEvents(true);
     window.loadFile(path.join(__dirname, 'overlay-wallpaper.html'), { hash: encodeURIComponent(overlayPath) });
+    window.webContents.once('did-finish-load', async () => {
+      try { await attachToDesktopWorkerW(window); }
+      catch (error) { console.error('WorkerW attach failed:', error.message); }
+    });
     return window;
   });
   if (mainWindow && !mainWindow.isDestroyed()) { mainWindow.show(); mainWindow.focus(); }
-  return { ok: true, message: `Đã đè nền trên ${overlayWindows.length} màn hình. App vẫn hiển thị phía trên và overlay tiếp tục chạy khi thu nhỏ.` };
+  return { ok: true, message: `Đã đặt nền động vào lớp desktop trên ${overlayWindows.length} màn hình. Các ứng dụng khác sẽ luôn nằm phía trên.` };
 });
 
 ipcMain.handle('remove-overlay-wallpaper', () => { closeOverlayWallpaper(); return { ok: true, message: 'Đã gỡ đè màn. Nền Windows native không bị thay đổi.' }; });

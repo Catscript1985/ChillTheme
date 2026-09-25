@@ -22,7 +22,7 @@ Các link dưới đây luôn trỏ tới asset của **GitHub Release mới nh�
 
 ### 2. Đè màn overlay
 
-Nút **Đè màn** tạo một cửa sổ overlay riêng cho từng màn hình. Ảnh được tự căn theo đúng kích thước từng display bằng `object-fit: cover`, vì vậy không còn bị nhỏ hơn màn hình hoặc xuất hiện viền đen. Hệ thống sẽ crop phần dư nhỏ nếu tỷ lệ ảnh khác tỷ lệ màn hình để giữ chủ thể ở giữa và phủ kín toàn bộ display. GIF được giữ nguyên file động ở chế độ này nên vẫn phát animation. App chính vẫn hiện phía trên khi mở, còn overlay tiếp tục chạy khi bấm nút đóng vì ChillTheme được giữ trong system tray.
+Nút **Đè màn** tạo một cửa sổ overlay riêng cho từng màn hình rồi gắn vào lớp desktop `WorkerW` của Windows. Vì vậy nền động nằm sau icon desktop và sau mọi ứng dụng đang mở, không còn phủ lên cửa sổ máy tính. Ảnh được tự căn theo đúng kích thước từng display bằng `object-fit: cover`, vì vậy không còn bị nhỏ hơn màn hình hoặc xuất hiện viền đen. Hệ thống sẽ crop phần dư nhỏ nếu tỷ lệ ảnh khác tỷ lệ màn hình để giữ chủ thể ở giữa và phủ kín toàn bộ display. GIF được giữ nguyên file động ở chế độ này nên vẫn phát animation. Overlay tiếp tục chạy khi bấm nút đóng vì ChillTheme được giữ trong system tray.
 
 - **Đè màn:** bật overlay trên tất cả màn hình.
 - **Gỡ đè:** đóng riêng các cửa sổ overlay, không thay đổi nền Windows native.
