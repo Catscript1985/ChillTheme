@@ -22,7 +22,7 @@ Các link dưới đây luôn trỏ tới asset của **GitHub Release mới nh�
 
 ### 2. Đè màn overlay
 
-Nút **Đè màn** tạo một cửa sổ overlay riêng cho từng màn hình. Ảnh được tự căn theo đúng kích thước từng display bằng `object-fit: contain`, giúp không bị phóng to/cắt ảnh và giữ độ rõ tốt hơn. App chính vẫn hiện phía trên khi mở, còn overlay tiếp tục chạy khi bấm nút đóng vì ChillTheme được giữ trong system tray.
+Nút **Đè màn** tạo một cửa sổ overlay riêng cho từng màn hình. Ảnh được tự căn theo đúng kích thước từng display bằng `object-fit: cover`, vì vậy không còn bị nhỏ hơn màn hình hoặc xuất hiện viền đen. Hệ thống sẽ crop phần dư nhỏ nếu tỷ lệ ảnh khác tỷ lệ màn hình để giữ chủ thể ở giữa và phủ kín toàn bộ display. GIF được giữ nguyên file động ở chế độ này nên vẫn phát animation. App chính vẫn hiện phía trên khi mở, còn overlay tiếp tục chạy khi bấm nút đóng vì ChillTheme được giữ trong system tray.
 
 - **Đè màn:** bật overlay trên tất cả màn hình.
 - **Gỡ đè:** đóng riêng các cửa sổ overlay, không thay đổi nền Windows native.
@@ -34,7 +34,7 @@ Nút **Đè màn** tạo một cửa sổ overlay riêng cho từng màn hình. 
 - Không cần đăng nhập; mở app là dùng.
 - Thư viện ảnh lưu cục bộ trên thiết bị.
 - Upload JPG, PNG, WebP và GIF.
-- GIF được lấy khung hình đầu tiên và chuyển thành PNG để tương thích nền Windows native; overlay có thể hiển thị file ảnh đã chuẩn hóa.
+- GIF ở **Đè màn** giữ nguyên animation. GIF ở **Thay nền Windows native** dùng khung hình đầu tiên và chuyển thành PNG vì Windows native không phát GIF động trực tiếp.
 - Nguồn ảnh 2K–4K được khuyến nghị để đạt độ nét tốt.
 
 ## Chạy từ mã nguồn
