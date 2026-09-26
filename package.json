@@ -1,6 +1,6 @@
 {
   "name": "chilltheme",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Personal wallpaper library for Windows, macOS and Linux",
   "author": "ChillTheme Contributors <noreply@github.com>",
   "main": "electron/main.cjs",
@@ -14,16 +14,27 @@
     "build:linux": "electron-builder --linux --x64 --publish never",
     "check": "node --check electron/main.cjs && node --check src/app.js"
   },
-  "keywords": ["wallpaper", "windows", "gif", "electron"],
+  "keywords": [
+    "wallpaper",
+    "windows",
+    "gif",
+    "electron"
+  ],
   "license": "MIT",
   "build": {
     "appId": "com.chilltheme.desktop",
     "productName": "ChillTheme",
     "artifactName": "ChillTheme-${os}-${arch}.${ext}",
     "asar": true,
-    "files": ["electron/**/*", "src/**/*", "package.json"],
+    "files": [
+      "electron/**/*",
+      "src/**/*",
+      "package.json"
+    ],
     "win": {
-      "target": ["nsis"],
+      "target": [
+        "nsis"
+      ],
       "artifactName": "ChillTheme-Windows-${arch}.${ext}"
     },
     "nsis": {
@@ -37,12 +48,18 @@
       "shortcutName": "ChillTheme"
     },
     "mac": {
-      "target": ["dmg", "zip"],
+      "target": [
+        "dmg",
+        "zip"
+      ],
       "category": "public.app-category.utilities",
       "artifactName": "ChillTheme-macOS-${arch}.${ext}"
     },
     "linux": {
-      "target": ["AppImage", "deb"],
+      "target": [
+        "AppImage",
+        "deb"
+      ],
       "category": "Utility",
       "artifactName": "ChillTheme-Linux-${arch}.${ext}"
     }

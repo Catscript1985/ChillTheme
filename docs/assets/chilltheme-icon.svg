@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="ChillTheme icon">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9d8cff"/><stop offset="1" stop-color="#d4f36a"/></linearGradient></defs>
+  <rect width="128" height="128" rx="30" fill="#10131a"/>
+  <ellipse cx="64" cy="64" rx="47" ry="24" fill="none" stroke="url(#g)" stroke-width="5" transform="rotate(-28 64 64)"/>
+  <ellipse cx="64" cy="64" rx="47" ry="24" fill="none" stroke="#9d8cff" stroke-width="3" opacity=".6" transform="rotate(28 64 64)"/>
+  <circle cx="64" cy="64" r="34" fill="#151922" stroke="#2b303b" stroke-width="3"/>
+  <path d="m64 42 6.2 13.2L85 57.1 74.2 67.8l2.6 15L64 75.7 51.2 82.8l2.6-15L43 57.1l14.8-1.9z" fill="#d4f36a"/>
+  <circle cx="104" cy="45" r="6" fill="#d4f36a"/>
+</svg>

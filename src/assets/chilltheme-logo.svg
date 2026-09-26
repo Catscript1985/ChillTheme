@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 96" role="img" aria-labelledby="title desc">
+  <title id="title">ChillTheme logo</title>
+  <desc id="desc">A lime star inside a violet orbital frame followed by ChillTheme wordmark.</desc>
+  <defs>
+    <linearGradient id="orbit" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9d8cff"/><stop offset="1" stop-color="#d4f36a"/></linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <g transform="translate(48 48)">
+    <ellipse rx="34" ry="17" fill="none" stroke="url(#orbit)" stroke-width="3" transform="rotate(-28)" opacity=".9"/>
+    <ellipse rx="34" ry="17" fill="none" stroke="#9d8cff" stroke-width="2" transform="rotate(28)" opacity=".55"/>
+    <circle r="27" fill="#151922" stroke="#2b303b" stroke-width="2"/>
+    <path d="m0-17 4.8 10.2L16-5.3 7.7 3l2 11.5L0 9.1l-9.7 5.4 2-11.5L-16-5.3l11.2-1.5z" fill="#d4f36a" filter="url(#glow)"/>
+    <circle cx="30" cy="-14" r="4" fill="#d4f36a"/>
+  </g>
+  <text x="98" y="62" fill="#f4f0e8" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" letter-spacing="-2">ChillTheme</text>
+</svg>

@@ -1,5 +1,7 @@
 # ChillTheme
 
+<img src="docs/assets/chilltheme-logo.svg" alt="ChillTheme" width="330">
+
 ChillTheme là ứng dụng desktop offline-first để lưu, xem và thay hình nền Windows qua app. Từ v0.3.0, bạn có thể chọn giữa **nền Windows native** hoặc **đè màn overlay**.
 
 ## Tải bản mới nhất
