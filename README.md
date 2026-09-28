@@ -2,7 +2,7 @@
 
 <img src="docs/assets/chilltheme-logo.svg" alt="ChillTheme" width="330">
 
-ChillTheme là ứng dụng desktop offline-first để lưu, xem và thay hình nền Windows qua app. Từ v0.3.0, bạn có thể chọn giữa **nền Windows native** hoặc **đè màn overlay**.
+ChillTheme là ứng dụng desktop offline-first để lưu, xem và thay hình nền Windows qua app. Từ v0.4.0, bạn có thể chọn giữa **nền Windows native** hoặc **đè màn overlay**; giao diện nút đã được làm rõ hơn.
 
 ## Tải bản mới nhất
 
@@ -34,10 +34,16 @@ Nút **Đè màn** tạo một cửa sổ overlay riêng cho từng màn hình r
 ## Các tính năng khác
 
 - Không cần đăng nhập; mở app là dùng.
-- Thư viện ảnh lưu cục bộ trên thiết bị.
+- Thư viện ảnh lưu thành file trong thư mục dữ liệu ChillTheme của người dùng, không mất khi tắt app, tắt máy hoặc mở lại. Chỉ mất khi gỡ app/xóa dữ liệu ứng dụng.
 - Upload JPG, PNG, WebP và GIF.
 - GIF ở **Đè màn** giữ nguyên animation. GIF ở **Thay nền Windows native** dùng khung hình đầu tiên và chuyển thành PNG vì Windows native không phát GIF động trực tiếp.
-- Nguồn ảnh 2K–4K được khuyến nghị để đạt độ nét tốt.
+- Có sẵn ba GIF pixel chill mẫu 2560 × 1440 trong thư viện lần đầu cài app: Neon Room, Sunset Train và Rainy Cafe.
+
+## Bản cập nhật v0.4.0
+
+- Nền Windows native được lưu tại thư mục dữ liệu ứng dụng nên Windows vẫn giữ nền sau shutdown/restart.
+- Giao diện chi tiết ảnh có nhóm nút rõ ràng: **XÓA ẢNH**, **GỠ NỀN NATIVE**, **GỠ ĐÈ**, **THAY NỀN WINDOWS**, **ĐÈ MÀN**.
+- Bộ ảnh pixel mẫu được đóng gói trong app và tự thêm vào thư viện ở lần mở đầu tiên.
 
 ## Chạy từ mã nguồn
 

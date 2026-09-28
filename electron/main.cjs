@@ -19,6 +19,11 @@ function runPowerShell(script) {
 }
 function quotePowerShell(value) { return String(value).replace(/'/g, "''"); }
 function backupPath() { return path.join(app.getPath('userData'), 'wallpaper-backup.json'); }
+function libraryDir() { return path.join(app.getPath('userData'), 'library'); }
+function libraryManifestPath() { return path.join(libraryDir(), 'library.json'); }
+function readManifest() { try { return JSON.parse(fs.readFileSync(libraryManifestPath(), 'utf8')); } catch { return []; } }
+function writeManifest(items) { fs.mkdirSync(libraryDir(), { recursive: true }); fs.writeFileSync(libraryManifestPath(), JSON.stringify(items, null, 2)); }
+function dataUrlFor(filePath, mime) { return `data:${mime};base64,${fs.readFileSync(filePath).toString('base64')}`; }
 function closeOverlayWallpaper() { overlayWindows.forEach((window) => { if (!window.isDestroyed()) window.close(); }); overlayWindows = []; }
 function nativeWindowHandle(window) {
   const buffer = window.getNativeWindowHandle();
@@ -72,13 +77,26 @@ ipcMain.handle('choose-image', async () => {
   return result.canceled ? [] : result.filePaths;
 });
 
+ipcMain.handle('load-library', async () => readManifest().filter((item) => fs.existsSync(path.join(libraryDir(), item.file))).map((item) => ({ ...item, dataUrl: dataUrlFor(path.join(libraryDir(), item.file), item.type) })));
+ipcMain.handle('save-library-image', async (_event, image) => {
+  const ext = image.type === 'image/gif' ? 'gif' : image.type === 'image/jpeg' ? 'jpg' : image.type === 'image/webp' ? 'webp' : 'png';
+  const file = `${image.id}.${ext}`;
+  const match = String(image.dataUrl || '').match(/^data:[^;]+;base64,(.+)$/);
+  if (!match) throw new Error('Invalid image data');
+  fs.mkdirSync(libraryDir(), { recursive: true }); fs.writeFileSync(path.join(libraryDir(), file), Buffer.from(match[1], 'base64'));
+  const item = { id: image.id, name: image.name, size: image.size, type: image.type, kind: image.kind, file, createdAt: image.createdAt };
+  writeManifest([item, ...readManifest().filter((entry) => entry.id !== item.id)]); return item;
+});
+ipcMain.handle('delete-library-image', async (_event, id) => { const items = readManifest(); const item = items.find((entry) => entry.id === id); if (item) { try { fs.unlinkSync(path.join(libraryDir(), item.file)); } catch {} writeManifest(items.filter((entry) => entry.id !== id)); } return { ok: true }; });
+
 ipcMain.handle('set-wallpaper', async (_event, payload) => {
   if (process.platform !== 'win32') return { ok: false, message: 'Đặt nền native hiện chỉ triển khai cho Windows.' };
   if (!payload?.dataUrl) return { ok: false, message: 'Chưa có dữ liệu hình nền.' };
   const match = payload.dataUrl.match(/^data:image\/(png|jpeg|jpg|webp);base64,(.+)$/);
   if (!match) return { ok: false, message: 'Ảnh chưa ở định dạng tương thích Windows.' };
   const ext = match[1] === 'jpeg' || match[1] === 'jpg' ? 'jpg' : match[1];
-  const wallpaperPath = path.join(os.tmpdir(), `chilltheme-wallpaper.${ext}`);
+  const wallpaperPath = path.join(app.getPath('userData'), 'wallpapers', `current.${ext}`);
+  fs.mkdirSync(path.dirname(wallpaperPath), { recursive: true });
   fs.writeFileSync(wallpaperPath, Buffer.from(match[2], 'base64'));
   try { await applyNativeWallpaper(wallpaperPath); return { ok: true, message: payload.wasGif ? 'Đã thay nền Windows bằng khung hình đầu tiên của GIF.' : 'Đã thay hẳn nền Windows. Chế độ Fill đã tự khớp màn hình.' }; }
   catch (error) { return { ok: false, message: `Không thể thay nền Windows: ${error.message}` }; }
